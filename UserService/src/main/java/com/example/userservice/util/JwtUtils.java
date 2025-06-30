@@ -33,7 +33,7 @@ public class JwtUtils {
                 .compact();
     }
 
-    public String getIdFromToken(String token){
+    public String getEmailFromToken(String token){
         return Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()
@@ -47,6 +47,7 @@ public class JwtUtils {
             Jwts.parserBuilder()
                     .setSigningKey(secretKey)
                     .build()
+
                     .parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException exception){

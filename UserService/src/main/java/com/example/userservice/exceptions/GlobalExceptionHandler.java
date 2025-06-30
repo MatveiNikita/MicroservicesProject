@@ -34,6 +34,6 @@ public class GlobalExceptionHandler {
                 request.getRequestURI(),
                 LocalDateTime.now()
         );
-        return ResponseEntity.status(exception.getErrorCode()).body(responseException);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(responseException);
     }
 }

@@ -18,6 +18,6 @@ public class JwtService {
     }
 
     public String extractUserEmail(String token) {
-        return jwtUtils.getIdFromToken(token);
+        return jwtUtils.getEmailFromToken(token);
     }
 }
