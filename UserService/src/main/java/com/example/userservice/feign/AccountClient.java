@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @FeignClient(name = "account-feign", url = "${account.service.uri}")
-public interface AccountFeignClient {
+public interface AccountClient {
 
     @GetMapping("/by-email")
     List<ViewAccountDto> getAccountsByUserEmail(@RequestParam("handler-email") String email);

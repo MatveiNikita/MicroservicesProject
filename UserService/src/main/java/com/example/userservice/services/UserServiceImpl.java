@@ -4,14 +4,13 @@ import com.example.userservice.dto.PresentUser;
 import com.example.userservice.dto.RegistrationUserDto;
 import com.example.userservice.dto.UpdateUserDto;
 import com.example.userservice.dto.ViewAccountDto;
-import com.example.userservice.feign.AccountFeignClient;
+import com.example.userservice.feign.AccountClient;
 import com.example.userservice.models.User;
 import com.example.userservice.mapper.UserMapper;
 import com.example.userservice.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -30,7 +29,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-    private final AccountFeignClient accountFeignClient;
+    private final AccountClient accountFeignClient;
 
     @Transactional
     @Override
