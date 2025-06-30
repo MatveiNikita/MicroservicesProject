@@ -5,6 +5,7 @@ import com.example.accountservice.dto.UpdateAccountDto;
 import com.example.accountservice.dto.ViewAccountDto;
 import com.example.accountservice.models.Account;
 import com.example.accountservice.services.AccountService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,13 +16,13 @@ import java.util.UUID;
 @RestController
 @RequestMapping(path = "/accounts", produces = {"application/json"})
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost/account-api")
+@CrossOrigin(origins = "http://localhost:8081/account-api")
 public class AccountController {
 
     private final AccountService accountService;
 
     @PostMapping
-    public ResponseEntity<Account> createAccount(@RequestBody CreateAccountDto createAccountDto){
+    public ResponseEntity<Account> createAccount(@RequestBody @Valid CreateAccountDto createAccountDto){
         Account newAccount = accountService.createAccount(createAccountDto);
         return ResponseEntity.ok(newAccount);
     }
@@ -32,9 +33,9 @@ public class AccountController {
         return ResponseEntity.ok(account);
     }
 
-    @GetMapping("/{handler-id}")
-    public ResponseEntity<List<ViewAccountDto>> getAccountsByHandlerId(@RequestParam("handler-id") String handlerId){
-        List<ViewAccountDto> allAccounts = accountService.getAllAccountsByHandlerId(handlerId);
+    @GetMapping("/{handler-email}")
+    public ResponseEntity<List<ViewAccountDto>> getAccountsByHandlerId(@RequestParam("handler-email") String handlerEmail){
+        List<ViewAccountDto> allAccounts = accountService.getAllAccountsByUserEmail(handlerEmail);
         return ResponseEntity.ok(allAccounts);
     }
 

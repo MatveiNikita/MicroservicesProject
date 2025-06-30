@@ -1,5 +1,6 @@
 package com.example.userservice.controllers;
 
+import com.example.userservice.dto.PresentUser;
 import com.example.userservice.dto.UpdateUserDto;
 import com.example.userservice.models.User;
 import com.example.userservice.services.UserService;
@@ -13,11 +14,15 @@ import java.util.UUID;
 @RestController
 @RequestMapping(path = "/users", produces = {"application/json"})
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost/user-api")
+@CrossOrigin(origins = "http://localhost:8080/user-api")
 public class UserController {
 
     private final UserService userService;
 
+    @GetMapping
+    public ResponseEntity<PresentUser>presentUser(){
+        return new ResponseEntity<>(userService.presentUser(), HttpStatus.OK);
+    }
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable("id") UUID id){
         User user = userService.getUserById(id);

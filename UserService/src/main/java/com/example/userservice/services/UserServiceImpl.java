@@ -1,22 +1,26 @@
 package com.example.userservice.services;
 
-import com.example.userservice.dto.CreateUserDto;
+import com.example.userservice.dto.PresentUser;
 import com.example.userservice.dto.RegistrationUserDto;
 import com.example.userservice.dto.UpdateUserDto;
+import com.example.userservice.dto.ViewAccountDto;
+import com.example.userservice.feign.AccountFeignClient;
 import com.example.userservice.models.User;
 import com.example.userservice.mapper.UserMapper;
 import com.example.userservice.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -26,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final AccountFeignClient accountFeignClient;
 
     @Transactional
     @Override
@@ -52,6 +57,30 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
+    @Override
+    public PresentUser presentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+
+        Object principal = authentication.getPrincipal();
+
+        String email;
+
+        if (principal instanceof UserDetails userDetails) {
+            email = userDetails.getUsername();
+        } else if (principal instanceof String username) {
+            email = username;
+        } else {
+            return null;
+        }
+
+
+        List<ViewAccountDto> accounts = accountFeignClient.getAccountsByUserEmail(email);
+        return new PresentUser(email, accounts);
+    }
 
     @Override
     public void deleteUserById(UUID id) {

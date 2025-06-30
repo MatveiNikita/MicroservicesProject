@@ -12,7 +12,7 @@ public interface AccountService {
 
     Account createAccount(CreateAccountDto createAccountDto);
     Account getAccountById(UUID id);
-    List<ViewAccountDto> getAllAccountsByHandlerId(String handlerId);
+    List<ViewAccountDto> getAllAccountsByUserEmail(String email);
     Account updateAccount(UpdateAccountDto updateAccount);
     void deleteAccountById(UUID id);
 }

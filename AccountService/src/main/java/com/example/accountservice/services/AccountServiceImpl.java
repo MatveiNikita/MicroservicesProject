@@ -24,7 +24,11 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account createAccount(CreateAccountDto createAccountDto) {
-        Account account = accountMapper.toEntity(createAccountDto);
+//        Account account = accountMapper.toEntity(createAccountDto);
+        Account account = new Account();
+        account.setAccountName(createAccountDto.accountName());
+        account.setUserEmail(createAccountDto.userEmail());
+        System.out.println(account);
         return accountRepository.save(account);
     }
 
@@ -37,13 +41,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<ViewAccountDto> getAllAccountsByHandlerId(String handlerId) {
-        List<Account> accounts = accountRepository.findAllByHandlerId(handlerId)
+    public List<ViewAccountDto> getAllAccountsByUserEmail(String email) {
+        return accountRepository.findAllAccountsByUserEmail(email)
                 .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "This handler doesn't have accounts")
-                );
-
-        return accounts.stream().map(accountMapper::toViewAccountDto).collect(Collectors.toList());
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Current User doesn't have accounts")
+                ).stream()
+                .map(accountMapper::toViewAccountDto).toList();
     }
 
     @Override
