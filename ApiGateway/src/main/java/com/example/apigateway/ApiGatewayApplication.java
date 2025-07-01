@@ -12,8 +12,4 @@ public class ApiGatewayApplication {
 		SpringApplication.run(ApiGatewayApplication.class, args);
 	}
 
-	public RouteLocator customRouteLocator(RouteLocatorBuilder builder){
-		builder.routes()
-				.route()
-	}
 }
