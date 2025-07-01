@@ -58,15 +58,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public PresentUser presentUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         String email;
+
         if (principal instanceof UserDetails userDetails) {
             email = userDetails.getUsername();
-        } else if (principal instanceof String username) {
-            email = username;
         } else {
             return null;
         }
-        System.out.println(email);
+
         List<ViewAccountDto> accounts = accountFeignClient.getAccountsByUserEmail(email);
         return new PresentUser(email, accounts);
     }
