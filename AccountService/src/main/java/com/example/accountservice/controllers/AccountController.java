@@ -33,8 +33,8 @@ public class AccountController {
         return ResponseEntity.ok(account);
     }
 
-    @GetMapping("/{handler-email}")
-    public ResponseEntity<List<ViewAccountDto>> getAccountsByHandlerId(@RequestParam("handler-email") String handlerEmail){
+    @GetMapping("/by-email")
+    public ResponseEntity<List<ViewAccountDto>> getAccountsByUserEmail(@RequestParam("handler-email") String handlerEmail){
         List<ViewAccountDto> allAccounts = accountService.getAllAccountsByUserEmail(handlerEmail);
         return ResponseEntity.ok(allAccounts);
     }

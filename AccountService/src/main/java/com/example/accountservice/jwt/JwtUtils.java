@@ -3,6 +3,7 @@ package com.example.accountservice.jwt;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -14,9 +15,9 @@ public class JwtUtils {
     private final Key SECRET_KEY;
     private final long EXPIRE_TIME;
 
-    public JwtUtils(@Value("jwt.secret") Key secretKey, @Value("jwt.expire.time") long EXPIRE_TIME) {
-        this.SECRET_KEY = secretKey;
-        this.EXPIRE_TIME = EXPIRE_TIME;
+    public JwtUtils(@Value("${jwt.secret}") String secretKey, @Value("${jwt.expire.time}") long expire) {
+        this.SECRET_KEY = Keys.hmacShaKeyFor(secretKey.getBytes());
+        this.EXPIRE_TIME = expire;
     }
 
     public String generateJwtFromEmail(String email){

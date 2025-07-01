@@ -10,7 +10,6 @@ import com.example.userservice.mapper.UserMapper;
 import com.example.userservice.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -58,16 +57,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PresentUser presentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return null;
-        }
-
-        Object principal = authentication.getPrincipal();
-
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email;
-
         if (principal instanceof UserDetails userDetails) {
             email = userDetails.getUsername();
         } else if (principal instanceof String username) {
@@ -75,8 +66,7 @@ public class UserServiceImpl implements UserService {
         } else {
             return null;
         }
-
-
+        System.out.println(email);
         List<ViewAccountDto> accounts = accountFeignClient.getAccountsByUserEmail(email);
         return new PresentUser(email, accounts);
     }
