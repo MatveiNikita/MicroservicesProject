@@ -2,6 +2,8 @@ package com.example.apigateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 
 @SpringBootApplication
 public class ApiGatewayApplication {
@@ -10,4 +12,8 @@ public class ApiGatewayApplication {
 		SpringApplication.run(ApiGatewayApplication.class, args);
 	}
 
+	public RouteLocator customRouteLocator(RouteLocatorBuilder builder){
+		builder.routes()
+				.route()
+	}
 }
