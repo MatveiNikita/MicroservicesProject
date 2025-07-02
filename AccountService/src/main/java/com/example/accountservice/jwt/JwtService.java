@@ -14,6 +14,10 @@ public class JwtService {
     }
 
     public String extractUserEmail(String token){
-     return jwtUtils.generateJwtFromEmail(token);
+     return jwtUtils.getEmailFromToken(token);
+    }
+
+    public String generateTokenFromEmail(String email){
+        return jwtUtils.generateJwtFromEmail(email);
     }
 }

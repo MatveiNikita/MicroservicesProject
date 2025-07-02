@@ -41,6 +41,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(UUID id) {
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
         return userRepository.getUserById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User with id: " + id + " doesn't exists")
         );

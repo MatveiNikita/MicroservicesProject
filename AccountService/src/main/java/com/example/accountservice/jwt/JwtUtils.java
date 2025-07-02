@@ -32,8 +32,23 @@ public class JwtUtils {
                 .compact();
     }
 
+    public String getEmailFromToken(String token){
+        if (token != null && token.startsWith("Bearer ")){
+            token = token.substring(7).trim();
+        }
+        return Jwts.parserBuilder()
+                .setSigningKey(SECRET_KEY)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
+
     public boolean validateToken(String token){
         try{
+            if (token != null && token.startsWith("Bearer ")){
+                token = token.substring(7).trim();
+            }
             Jwts.parserBuilder()
                     .setSigningKey(SECRET_KEY)
                     .build()

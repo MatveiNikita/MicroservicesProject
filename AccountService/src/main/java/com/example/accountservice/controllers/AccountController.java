@@ -1,11 +1,14 @@
 package com.example.accountservice.controllers;
 
+import com.example.accountservice.dto.ChangeAmountDto;
 import com.example.accountservice.dto.CreateAccountDto;
 import com.example.accountservice.dto.UpdateAccountDto;
 import com.example.accountservice.dto.ViewAccountDto;
+import com.example.accountservice.jwt.JwtService;
 import com.example.accountservice.models.Account;
 import com.example.accountservice.services.AccountService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,10 +23,13 @@ import java.util.UUID;
 public class AccountController {
 
     private final AccountService accountService;
+    private final JwtService jwtService;
 
     @PostMapping
-    public ResponseEntity<Account> createAccount(@RequestBody @Valid CreateAccountDto createAccountDto){
-        Account newAccount = accountService.createAccount(createAccountDto);
+    public ResponseEntity<Account> createAccount(@RequestBody @Valid CreateAccountDto createAccountDto, @RequestHeader("Authorization") String token){
+        jwtService.isTokenValid(token);
+        String email = jwtService.extractUserEmail(token);
+        Account newAccount = accountService.createAccount(createAccountDto, email);
         return ResponseEntity.ok(newAccount);
     }
 
@@ -34,8 +40,9 @@ public class AccountController {
     }
 
     @GetMapping("/by-email")
-    public ResponseEntity<List<ViewAccountDto>> getAccountsByUserEmail(@RequestParam("handler-email") String handlerEmail){
-        List<ViewAccountDto> allAccounts = accountService.getAllAccountsByUserEmail(handlerEmail);
+    public ResponseEntity<List<ViewAccountDto>> getAccountsByUserEmail(@RequestHeader("Authorization") String token){
+        jwtService.isTokenValid(token);
+        List<ViewAccountDto> allAccounts = accountService.getAllAccountsByUserEmail(jwtService.extractUserEmail(token));
         return ResponseEntity.ok(allAccounts);
     }
 
@@ -45,9 +52,22 @@ public class AccountController {
         return ResponseEntity.ok(account);
     }
 
+    @PatchMapping("/add-balance")
+    public ResponseEntity<Account> addBalance(@Valid @RequestBody ChangeAmountDto changeAmountDto, @RequestHeader("Authorization") String token){
+        Account account = accountService.addBalance(changeAmountDto.uuid(), changeAmountDto.amount(), token);
+        return ResponseEntity.ok(account);
+    }
+
+    @PatchMapping("/minus-balance")
+    public ResponseEntity<Account> minusBalance(@Valid @RequestBody ChangeAmountDto changeAmountDto, @RequestHeader("Authorization") String token){
+        Account account = accountService.minusBalance(changeAmountDto.uuid(), changeAmountDto.amount(), token);
+        return ResponseEntity.ok(account);
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteAccountById(@RequestParam("id") UUID id){
+    public ResponseEntity<String> deleteAccountById(@PathVariable("id") UUID id){
         accountService.deleteAccountById(id);
         return ResponseEntity.ok("deleted");
     }
+
 }

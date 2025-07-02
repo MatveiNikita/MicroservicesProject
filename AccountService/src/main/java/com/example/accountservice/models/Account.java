@@ -3,6 +3,7 @@ package com.example.accountservice.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,7 +31,9 @@ public class Account {
     @Column(name = "user_email", updatable = false)
     private String userEmail;
 
-    private BigDecimal balance;
+    @Column(nullable = false)
+    @PositiveOrZero
+    private BigDecimal balance = new BigDecimal(0);
 
     @CreationTimestamp
     @Column(name = "created_time")

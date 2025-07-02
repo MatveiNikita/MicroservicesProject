@@ -1,9 +1,12 @@
 package com.example.accountservice.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.UUID;
 
 public record UpdateAccountDto(
-        UUID accountId,
-        String accountName
+        @NotNull UUID accountId,
+        @NotBlank String accountName
 ) {
 }
