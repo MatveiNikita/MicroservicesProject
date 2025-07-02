@@ -8,5 +8,5 @@ import java.util.UUID;
 
 public record ChangeAmountDto(
         @NotNull UUID uuid,
-       @Positive BigDecimal amount) {
-}
+       @Positive BigDecimal amount
+) {}

@@ -4,6 +4,7 @@ import com.example.userservice.dto.PresentUser;
 import com.example.userservice.dto.UpdateUserDto;
 import com.example.userservice.models.User;
 import com.example.userservice.services.UserService;
+import com.example.userservice.util.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.HttpStatus;
@@ -19,16 +20,18 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
-
     private final RabbitTemplate rabbitTemplate;
+    private final JwtService jwtService;
 
     private final String notificationExchange = "notificationExchange";
     private final String routingKey = "notification.key";
 
     @GetMapping
-    public ResponseEntity<PresentUser>presentUser(){
-        PresentUser presentUser = userService.presentUser();
-        String message = "Present User : " + presentUser;
+    public ResponseEntity<PresentUser>presentUser(@RequestHeader("Authorization") String token){
+        System.out.println(token);
+        jwtService.validToken(token);
+        PresentUser presentUser = userService.presentUser(token);
+        String message = "User " + presentUser;
         rabbitTemplate.convertAndSend(notificationExchange, routingKey, message);
         return new ResponseEntity<>(presentUser, HttpStatus.OK);
     }

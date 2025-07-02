@@ -13,7 +13,7 @@ public class JwtService {
         return jwtUtils.generateJwtFromEmail(userEmail);
     }
 
-    public boolean isTokenValid(String token) {
+    public boolean validToken(String token) {
         return jwtUtils.validateToken(token);
     }
 

@@ -34,6 +34,9 @@ public class JwtUtils {
     }
 
     public String getEmailFromToken(String token){
+        if (token != null && token.startsWith("Bearer ")){
+            token = token.substring(7).trim();
+        }
         return Jwts.parserBuilder()
                 .setSigningKey(SECRET_KEY)
                 .build()

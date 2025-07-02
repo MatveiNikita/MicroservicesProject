@@ -8,10 +8,10 @@ import com.example.userservice.feign.AccountClient;
 import com.example.userservice.models.User;
 import com.example.userservice.mapper.UserMapper;
 import com.example.userservice.repositories.UserRepository;
+import com.example.userservice.util.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final AccountClient accountFeignClient;
-
+    private final JwtService jwtService;
     @Transactional
     @Override
     public User registrationUser(RegistrationUserDto registrationUserDto) {
@@ -57,18 +57,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PresentUser presentUser() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        String email;
-
-        if (principal instanceof UserDetails userDetails) {
-            email = userDetails.getUsername();
-        } else {
-            return null;
-        }
-
-        List<ViewAccountDto> accounts = accountFeignClient.getAccountsByUserEmail(email);
+    public PresentUser presentUser(String token) {
+        String email = jwtService.extractUserEmail(token);
+        List<ViewAccountDto> accounts= accountFeignClient.getAccountsByUserEmail(token);
         return new PresentUser(email, accounts);
     }
 

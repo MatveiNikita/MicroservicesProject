@@ -1,9 +1,10 @@
 package com.example.userservice.dto;
 
-import jakarta.annotation.Nonnull;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 public record UpdateUserDto(
-        @Nonnull String username,
-        @Nonnull String email
+        @NotBlank String username,
+        @NotBlank @Email String email
 ) {
 }

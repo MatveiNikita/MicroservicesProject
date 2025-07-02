@@ -34,7 +34,7 @@ public class AccountController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Account> getAccountById(@RequestParam("id") UUID id){
+    public ResponseEntity<Account> getAccountById(@PathVariable UUID id){
         Account account = accountService.getAccountById(id);
         return ResponseEntity.ok(account);
     }
@@ -65,7 +65,7 @@ public class AccountController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteAccountById(@PathVariable("id") UUID id){
+    public ResponseEntity<String> deleteAccountById(@PathVariable UUID id){
         accountService.deleteAccountById(id);
         return ResponseEntity.ok("deleted");
     }

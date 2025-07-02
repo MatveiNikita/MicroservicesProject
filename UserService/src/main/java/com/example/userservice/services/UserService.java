@@ -13,7 +13,7 @@ public interface UserService {
     User registrationUser(RegistrationUserDto registrationUserDto);
     User getUserById(UUID id);
     User updateUser(UUID id, UpdateUserDto updateUserDto);
-    PresentUser presentUser();
+    PresentUser presentUser(String token);
     void deleteUserById(UUID id);
     User getCurrentUser(); // можно получить по email из SecurityContext
 

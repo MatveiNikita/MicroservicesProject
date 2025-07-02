@@ -3,6 +3,7 @@ package com.example.userservice.controllers;
 import com.example.userservice.dto.RegistrationUserDto;
 import com.example.userservice.models.User;
 import com.example.userservice.services.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.HttpStatus;
@@ -24,8 +25,8 @@ public class RegisterController {
     private final String routingKey = "notification.key";
 
 
-    @PostMapping("/register")
-    public ResponseEntity<User> registration(@RequestBody RegistrationUserDto registrationUserDto){
+    @PostMapping
+    public ResponseEntity<User> registration(@Valid @RequestBody RegistrationUserDto registrationUserDto){
         User user = userService.registrationUser(registrationUserDto);
         String message = "User : " + registrationUserDto + " successfully register";
         rabbitTemplate.convertAndSend(notificationExchange, routingKey, message);

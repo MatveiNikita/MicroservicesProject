@@ -3,13 +3,17 @@ package com.example.userservice.controllers;
 import com.example.userservice.dto.JwtResponse;
 import com.example.userservice.dto.LoginRequestDto;
 import com.example.userservice.util.JwtUtils;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+
+import javax.security.auth.login.LoginException;
 
 @RestController
 @RequestMapping("/login")
@@ -23,8 +27,9 @@ public class LoginController {
     private final String notificationExchange = "notificationExchange";
     private final String routingKey = "notification.key";
 
+    @SneakyThrows
     @PostMapping
-    public ResponseEntity<JwtResponse> login(@RequestBody LoginRequestDto loginRequestDto) {
+    public ResponseEntity<JwtResponse> login(@Valid @RequestBody LoginRequestDto loginRequestDto) {
         try {
             Authentication authenticationRequest = UsernamePasswordAuthenticationToken
                     .unauthenticated(loginRequestDto.email(), loginRequestDto.password());
@@ -37,11 +42,11 @@ public class LoginController {
             return ResponseEntity.ok(new JwtResponse(jwt));
 
         } catch (BadCredentialsException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JwtResponse("Invalid credentials"));
+            throw new BadCredentialsException("invalid credentials");
         } catch (LockedException ex) {
-            return ResponseEntity.status(HttpStatus.LOCKED).body(new JwtResponse("Account is locked"));
+            throw new LoginException("Account is locked");
         } catch (DisabledException ex) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new JwtResponse("Account is disabled"));
+            throw  new DisabledException("Account is disable");
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new JwtResponse("Unexpected error: " + ex.getMessage()));
